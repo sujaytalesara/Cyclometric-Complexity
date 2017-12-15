@@ -44,12 +44,12 @@ Please see test/benchmark.pdf
 
 Tested with a list of repositories :
 
-```let repos = ["https://github.com/jepst/CloudHaskell",
-		"https://github.com/mwotton/Hubris", 
-		 "https://github.com/dmbarbour/Sirea", 
-		 "https://github.com/michaelochurch/summer-2015-haskell-class", 
-		 "https://github.com/jgoerzen/twidge", 
-		 "https://github.com/ollef/Earley", 
-		 "https://github.com/creswick/cabal-dev", 
-		 "https://github.com/lambdacube3d/lambdacube-edsl"]```
+```let repos = ["https://github.com/qnnguyen/HaskellAtHome",
+              	"https://github.com/wanermiranda/haskell",
+			 "https://github.com/stevenchen3/learning-haskell",
+			 "https://github.com/tmcgilchrist/transformers-either",
+			 "https://github.com/wangbj/haskell",
+			 "https://github.com/scharris/hmq",
+			 "https://github.com/snepo/depot",
+			 "https://github.com/treeowl/hstats"]```
 
