@@ -1,0 +1,51 @@
+let repos = ["https://github.com/jepst/CloudHaskell",
+			 "https://github.com/mwotton/Hubris", 
+			 "https://github.com/dmbarbour/Sirea", 
+			 "https://github.com/michaelochurch/summer-2015-haskell-class", 
+			 "https://github.com/jgoerzen/twidge", 
+			 "https://github.com/ollef/Earley", 
+			 "https://github.com/creswick/cabal-dev", 
+			 "https://github.com/lambdacube3d/lambdacube-edsl"]
+
+
+8 slaves
+real	0m27.488s
+user	0m0.008s
+sys	0m0.000s
+
+7
+real	0m29.738s
+user	0m0.008s
+sys	0m0.008s
+
+6
+real	0m33.156s
+user	0m0.004s
+sys	0m0.008s
+
+5
+real	0m38.131s
+user	0m0.004s
+sys	0m0.004s
+
+4
+real	0m43.425s
+user	0m0.008s
+sys	0m0.000s
+
+3
+real	0m48.906s
+user	0m0.012s
+sys	0m0.008s
+
+
+2
+real	1m11.649s
+user	0m0.016s
+sys	0m0.000s
+
+
+1
+real	1m50.814s
+user	0m0.004s
+sys	0m0.004s
