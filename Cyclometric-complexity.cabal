@@ -1,0 +1,37 @@
+name:                Cyclometric-complexity
+version:             0.1.0.0
+synopsis:            Initial project template from stack
+description:         Please see README.md
+homepage:            https://github.com/sujaytalesara/Cyclometric-Complexity#readme
+author:              Sujay Talesara
+maintainer:          sujay.talesara@gmail.com
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Lib
+  build-depends:       base >= 4.7 && < 5
+
+executable Cyclometric-complexity-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , Cyclometric-complexity
+                     , Cyclometric-process
+                     , network-transport-tcp
+                     , Cyclometric-process-simplelocalnet
+                     , split
+                     , MissingH
+                     , process
+                     , argon
+                     , pipes
+                     , pipes-safe
+                     , silently
+                     , directory
+
+source-repository head
+  type:     git
+  location: https://github.com/sujaytalesara/Cyclometric-Complexity
