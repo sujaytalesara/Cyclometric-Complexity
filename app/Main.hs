@@ -18,68 +18,69 @@ import Pipes.Safe (runSafeT)
 import System.IO.Silently
 
 
-workerAnalyseComplexity :: (ProcessId, NodeId, String) -> Process ()
-workerAnalyseComplexity (master, workerId, url) = do
-  liftIO ( putStrLn $ "Starting worker : " ++ (show workerId) ++ " with parameter: " ++ url)
-  let repoName = last $ splitOn "/" url
-  gitRepoExists <- liftIO $ doesDirectoryExist ("/tmp/" ++ repoName)
-  if not gitRepoExists then do
-    liftIO $ callProcess "/usr/bin/git" ["clone", url, "/tmp/" ++ repoName]
+workerAys_Complex :: (procID, nodID, String) -> Process ()
+
+workerAys_Complex (master, work_ID, Url) = do
+  lifttIO ( putStrLn $ "worker start : " ++ (show work_ID) ++ " -- parameters : --" ++ Url)
+  let RpName = last $ splitOn "/" Url
+  gitRepoEx <- lifttIO $ doesDirectoryExist ("/tmp/" ++ RpName)
+  if not gitRepoEx then do
+    lifttIO $ callProcess "/usr/bin/git" ["clone", Url, "/tmp/" ++ RpName]
   else do
-    liftIO $ putStrLn "Repository already there."
-  let conf = (Config 6 [] [] [] Colored)
-  let source = allFiles ("/tmp/" ++ repoName)
-              >-> P.mapM (liftIO . analyze conf)
-              >-> P.map (filterResults conf)
+    lifttIO $ putStrLn "Already a Repository present." -- tell repo exits
+  let confg = (Config 6 [] [] [] Colored)
+  let source = allFiles ("/tmp/" ++ RpName)
+              >-> P.mapM (lifttIO . analyze confg)
+              >-> P.map (filterResults confg)
               >-> P.filter filterNulls
-  liftIO $ putStrLn $ "Launching analyse for " ++ url
-  (output, _) <- liftIO $ capture $ runSafeT $ runEffect $ exportStream conf source
-  -- liftIO $ callProcess "/bin/rm" ["-rf", "/tmp/" ++ repoName]
-  liftIO ( putStrLn $ "End of worker : " ++ (show workerId) ++ " with parameter: " ++ url)
-  send master $ (workerId, url, output)
+  lifttIO $ putStrLn $ "Launching analyses " ++ Url
+  (outp, _) <- lifttIO $ capture $ runSafeT $ runEffect $ exportStream confg source
+  -- lifttIO $ callProcess "/bin/rm" ["-rf", "/tmp/" ++ repoName]
+  lifttIO ( putStrLn $ "End of worker : " ++ (show work_ID) ++ " with parameter: " ++ Url)
+  send master $ (work_ID, Url, outp)
 
 
-remotable ['workerAnalyseComplexity]
+remotable ['workerAys_Complex]
 
-myRemoteTable :: RemoteTable
-myRemoteTable = Main.__remoteTable initRemoteTable
+myRemotTabl :: RemoteTable
+myRemotTabl = Main.__remoteTable initRemoteTable
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
     ["master", host, port] -> do
-      backend <- initializeBackend host port myRemoteTable
-      startMaster backend (master backend)
+      iback <- initializeBackend host port myRemotTabl
+      startMaster iback (master iback)
     ["slave", host, port] -> do
-      backend <- initializeBackend host port myRemoteTable
-      startSlave backend
+      iback <- initializeBackend host port myRemotTabl
+      startSlave iback
 
-master :: Backend -> [NodeId] -> Process ()
-master backend slaves = do
-  liftIO . putStrLn $ "Slaves: " ++ show slaves
-  let repos = ["https://github.com/jepst/CloudHaskell", "https://github.com/mwotton/Hubris", "https://github.com/dmbarbour/Sirea", "https://github.com/michaelochurch/summer-2015-haskell-class", "https://github.com/jgoerzen/twidge", "https://github.com/ollef/Earley", "https://github.com/creswick/cabal-dev", "https://github.com/lambdacube3d/lambdacube-edsl"]
-  responses <- feedSlavesAndGetResponses repos slaves [] []
-  liftIO $ mapM (\(r,u) -> putStrLn $ "\n\n\n\n**************************************************************\n" ++ u ++ " :\n**************************************************************\n\n" ++  r) responses
+master :: Backend -> [nodID] -> Process ()
+master iback slaves = do
+  lifttIO . putStrLn $ "Slaves: " ++ show slaves
+  let repos = ["https://github.com/qnnguyen/HaskellAtHome","https://github.com/wanermiranda/haskell", "https://github.com/stevenchen3/learning-haskell","https://github.com/tmcgilchrist/transformers-either", "https://github.com/wangbj/haskell", "https://github.com/scharris/hmq", "https://github.com/snepo/depot", "https://github.com/treeowl/hstats"]
+  resp <- fSlaveGetResp repos slaves [] []
+  lifttIO $ mapM (\(r,u) -> putStrLn $ "\n\n\n\n*************************\n" ++ u ++ " :\n***************************************\n\n" ++  r) resp
   return ()
-  -- terminateAllSlaves backend
+  -- It will terminate all slaves
 
 
-feedSlavesAndGetResponses :: [String] -> [NodeId] -> [NodeId] -> [(String,String)] -> Process [(String,String)]
-feedSlavesAndGetResponses [] freeSlaves [] responses = return responses
-feedSlavesAndGetResponses repos freeSlaves busySlaves responses = do
-  (restRepos, newBusySlaves, newFreeSlaves) <- feedSlaves repos freeSlaves []
-  m <- expectTimeout 60000000 -- 1min max for each repo
-  case m of
-    Nothing            -> die "Master fatal failure, exiting."
-    Just (slave, url, resp) -> feedSlavesAndGetResponses restRepos (slave:newFreeSlaves) (delete slave (newBusySlaves ++ busySlaves)) ((resp,url):responses)
+fSlaveGetResp :: [String] -> [nodID] -> [nodID] -> [(String,String)] -> Process [(String,String)]
+fSlaveGetResp [] freeSlaves [] resp = return resp
+fSlaveGetResp repos freeSlaves busySlaves resp = do
+  (restRepos, newBySlaves, newFreeSlaves) <- feedSlaves repos freeSlaves []
+  n <- expectTimeout 60000000 -- 1min max for each repo
+  case n of
+    Nothing            -> die "failure Master --> exiting."
+    Just (slave, Url, resp) -> fSlaveGetResp restRepos (slave:newFreeSlaves) (delete slave (newBySlaves ++ busySlaves)) ((resp,url):resp)
 
 
-feedSlaves :: [String] -> [NodeId] -> [NodeId] -> Process ([String], [NodeId], [NodeId])
-feedSlaves [] slaves newBusySlaves = return ([], newBusySlaves, slaves)
-feedSlaves repos [] newBusySlaves = return (repos, newBusySlaves, [])
-feedSlaves (repo:repos) (oneSlave:slaves) newBusySlaves = do
+fSlave :: [String] -> [nodID] -> [nodID] -> Process ([String], [nodID], [nodID])
+fSlave [] slaves newBySlave = return ([], newBySlaves, slaves)
+fSlave repos [] newBySlaves = return (repos, newBySlaves, [])
+fSlave (repo:repos) (oneSlave:slaves) newBySlaves = do
   masterPid <- getSelfPid
-  _ <- spawn oneSlave $ $(mkClosure 'workerAnalyseComplexity) (masterPid, oneSlave, repo :: String)
-  feedSlaves repos slaves (oneSlave:newBusySlaves)
+  _ <- spawn oneSlave $ $(mkClosure 'workerAys_Complex) (masterPid, oneSlave, repo :: String)
+  fSlave repos slaves (oneSlave:newBySlaves)
 
