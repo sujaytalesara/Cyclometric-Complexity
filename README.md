@@ -38,9 +38,9 @@ docker run -i -p 0.0.0.0:8002:8002 --net=host sujaytalesara/Cyclometric-Complexi
 
 Note the use of ```--net=host``` option, which is needed to work easily with UDP multicast with docker. (cf https://hackage.haskell.org/package/distributed-process-simplelocalnet-0.2.3.3/docs/Control-Distributed-Process-Backend-SimpleLocalnet.html)
 
-## Benchmark
+## Result
 
-Please see test/benchmark.pdf
+Please see test/Graph.pdf
 
 Tested with a list of repositories :
 
